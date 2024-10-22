@@ -12,10 +12,10 @@ function Calculator() {
   });
   const [errors, setErrors] = useState({});
 
-  const [programs, setPrograms] = useState([]); // Para guardar toda la información del backend
-  const [universidades, setUniversidades] = useState([]); // Para guardar las universidades
-  const [carreras, setCarreras] = useState([]); // Para guardar las carreras
-  const [filteredPrograms, setFilteredPrograms] = useState([]); // Para guardar las filtradas
+  const [programs, setPrograms] = useState([]);
+  const [universidades, setUniversidades] = useState([]);
+  const [carreras, setCarreras] = useState([]);
+  const [filteredPrograms, setFilteredPrograms] = useState([]);
 
   useEffect(() => {
     // Llamadas a los endpoints para obtener toda la información
@@ -79,31 +79,43 @@ function Calculator() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     const hasErrors = Object.values(errors).some(error => error !== '');
-  if (hasErrors) {
-    alert('Por favor, corrige los errores antes de continuar.');
-    return;
-  }
-
-    const filtered = programs.filter(pr => {
+    if (hasErrors) {
+      alert('Por favor, corrige los errores antes de continuar.');
+      return;
+    }
+  
+    const filtered = programs.map(pr => {
+      // Si historia y ciencias tienen ponderación distinta de 0, tomar el mejor puntaje
+      let mejorHistoriaCiencias = 0;
+  
+      if (pr.ponderacionHistoria > 0 && pr.ponderacionCiencias > 0) {
+        mejorHistoriaCiencias = Math.max(scores.historia || 0, scores.ciencias || 0);
+      } else if (pr.ponderacionHistoria > 0) {
+        mejorHistoriaCiencias = scores.historia || 0;
+      } else if (pr.ponderacionCiencias > 0) {
+        mejorHistoriaCiencias = scores.ciencias || 0;
+      }
+  
       const ponderacionUsuario =
         ((scores.matematicas1 * pr.ponderacionM1) +
         (scores.lectura * pr.ponderacionLeguaje) +
         (scores.ranking * pr.ponderacionRanking) +
         (scores.nem * pr.ponderacionNem) +
         (scores.matematicas2 * pr.ponderacionM2) +
-        (scores.historia * pr.ponderacionHistoria) +
-        (scores.ciencias * pr.ponderacionCiencias)) / 100;
-
-      // Compara la ponderación calculada con el puntaje de corte
-      return ponderacionUsuario >= pr.puntajeCorte;
-    });
-
+        (mejorHistoriaCiencias * Math.max(pr.ponderacionHistoria, pr.ponderacionCiencias))) / 100;
+  
+      return {
+        ...pr,
+        ponderacionUsuario: ponderacionUsuario, // Guardamos el resultado del cálculo
+        pasaCorte: ponderacionUsuario >= pr.puntajeCorte // Filtramos si pasa el corte
+      };
+    }).filter(pr => pr.pasaCorte);
+  
     setFilteredPrograms(filtered); // Guarda los resultados filtrados
-    console.log('Filtered Programs:', filtered);
   };
-
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-3xl font-bold mb-6 text-center">Encuentra las universidades que mejor se adaptan a ti</h2>
@@ -221,30 +233,24 @@ function Calculator() {
             </tr>
           </thead>
           <tbody>
-            {filteredPrograms.length > 0 ? (
-              filteredPrograms.map((pr) => (
-                <tr key={`${pr.idCarrera}-${pr.idUniversidad}`}>
-                  <td className="px-4 py-2">{getNombreCarrera(pr.idCarrera)}</td>
-                  <td className="px-4 py-2">{getNombreUniversidad(pr.idUniversidad)}</td>
-                  <td className="px-4 py-2">{pr.puntajeCorte}</td>
-                  <td className="px-4 py-2">
-                    {/* Muestra la ponderación calculada */}
-                    {((scores.matematicas1 * pr.ponderacionM1) +
-                    (scores.lectura * pr.ponderacionLeguaje) +
-                    (scores.ranking * pr.ponderacionRanking) +
-                    (scores.nem * pr.ponderacionNem) +
-                    (scores.matematicas2 * pr.ponderacionM2) +
-                    (scores.historia * pr.ponderacionHistoria) +
-                    (scores.ciencias * pr.ponderacionCiencias)) / 100}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="text-center px-4 py-2">No hay resultados que superen el puntaje de corte</td>
-              </tr>
-            )}
-          </tbody>
+  {filteredPrograms.length > 0 ? (
+    filteredPrograms.map((pr) => (
+      <tr key={`${pr.idCarrera}-${pr.idUniversidad}`}>
+        <td className="px-4 py-2">{getNombreCarrera(pr.idCarrera)}</td>
+        <td className="px-4 py-2">{getNombreUniversidad(pr.idUniversidad)}</td>
+        <td className="px-4 py-2">{pr.puntajeCorte}</td>
+        <td className="px-4 py-2">
+          {pr.ponderacionUsuario.toFixed(2)} {/* Mostramos el valor calculado */}
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="4" className="text-center px-4 py-2">No hay resultados que superen el puntaje de corte</td>
+    </tr>
+  )}
+</tbody>
+
         </table>
       </div>
     </div>

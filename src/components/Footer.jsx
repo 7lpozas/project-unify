@@ -15,7 +15,7 @@ function Footer() {
             <ul className="space-y-2">
               <li><Link to="/" className="text-gray-400 hover:text-white transition duration-300">Inicio</Link></li>
               <li><Link to="/sobre-unify" className="text-gray-400 hover:text-white transition duration-300">Sobre Unify</Link></li>
-              {/* <li><Link to="/universidades" className="text-gray-400 hover:text-white transition duration-300">Universidades</Link></li> */}
+              <li><Link to="/universidades" className="text-gray-400 hover:text-white transition duration-300">Universidades</Link></li>
               <li><Link to="/calculator" className="text-gray-400 hover:text-white transition duration-300">Calculadora PAES</Link></li>
             </ul>
           </div>

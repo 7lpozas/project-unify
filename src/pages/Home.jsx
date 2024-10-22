@@ -20,7 +20,7 @@ function Home() {
           </div>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-2">Calculadora PAES</h3>
             <p className="text-gray-600 mb-4">Ingresa tus puntajes y descubre tus opciones universitarias.</p>
@@ -31,11 +31,11 @@ function Home() {
             <p className="text-gray-600 mb-4">Conoce tu nueva herramienta de postulación.</p>
             <Link to="/sobre-unify" className="text-primary font-semibold hover:underline"> Saber más →</Link>
           </div>
-          {/* <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Asesoría Personalizada</h3>
-            <p className="text-gray-600 mb-4">Recibe orientación experta para tu elección universitaria.</p>
-            <Link to="/contacto" className="text-primary font-semibold hover:underline">Contactar ahora →</Link>
-          </div> */}
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-xl font-semibold mb-2">Universidades Asociadas</h3>
+            <p className="text-gray-600 mb-4">Entérate de nuestros partners.</p>
+            <Link to="/universidades" className="text-primary font-semibold hover:underline">Universidades →</Link>
+          </div>
         </div>
       </div>
     </div>

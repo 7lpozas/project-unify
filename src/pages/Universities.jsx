@@ -2,11 +2,74 @@ import React from 'react';
 
 function Universities() {
   const universities = [
-    { name: 'Universidad Adolfo Ibáñez', location: 'Santiago', website: 'https://uai.cl/', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/29/Escude_de_la_Universidad_Adolfo_Iba%C3%B1ez.png' },
-    { name: 'Pontificia Universidad Católica de Chile', location: 'Santiago', website: 'https://www.uc.cl/', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Escudo_de_la_Pontificia_Universidad_Cat%C3%B3lica_de_Chile.svg/800px-Escudo_de_la_Pontificia_Universidad_Cat%C3%B3lica_de_Chile.svg.png' },
-    { name: 'Universidad Técnica Federico Santa María', location: 'Santiago', website: 'https://www.usm.cl/', logo: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Logo_UTFSM.png' },
-    { name: 'Universidad de San Sebastián', location: 'Santiago', website: 'https://www.uss.cl/', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Escudo_de_la_Universidad_San_Sebasti%C3%A1n.png' },
-  ];
+    { 
+      name: 'Universidad Central de Chile', 
+      location: 'Santiago', 
+      website: 'https://www.ucentral.cl/', 
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Logo_nuevo_ucen.png/180px-Logo_nuevo_ucen.png' 
+  },
+    { 
+        name: 'Universidad Diego Portales', 
+        location: 'Santiago', 
+        website: 'https://www.udp.cl/', 
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Escudo_de_la_Universidad_Diego_Portales.svg/540px-Escudo_de_la_Universidad_Diego_Portales.svg.png' 
+    },
+    { 
+        name: 'Universidad Adolfo Ibañez', 
+        location: 'Santiago', 
+        website: 'https://www.uai.cl/', 
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/29/Escude_de_la_Universidad_Adolfo_Iba%C3%B1ez.png' 
+    },
+    { 
+        name: 'Universidad de los Andes', 
+        location: 'Santiago', 
+        website: 'https://www.uandes.cl/', 
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Logo_Universidad_de_los_Andes.png/360px-Logo_Universidad_de_los_Andes.png' 
+    },
+    { 
+        name: 'Universidad Alberto Hurtado', 
+        location: 'Santiago', 
+        website: 'https://www.uahurtado.cl/', 
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/3/39/UAH-Insignia.jpg' 
+    },
+    { 
+      name: 'Universidad del Desarrollo', 
+      location: 'Santiago', 
+      website: 'https://www.udd.cl/', 
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/1/18/Logo_final_udd_tz.jpg' 
+  },
+    { 
+        name: 'Universidad Academia de Humanismo Cristiano', 
+        location: 'Santiago', 
+        website: 'https://www.academia.cl/', 
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Academialogo.png/400px-Academialogo.png' 
+    },
+    { 
+        name: 'Universidad de Las Américas', 
+        location: 'Santiago', 
+        website: 'https://www.udla.cl/', 
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/1/19/UDLA-logo-oficial.jpg' 
+    },
+    { 
+        name: 'Universidad Católica Silva Henríquez', 
+        location: 'Santiago', 
+        website: 'https://www.ucsh.cl/', 
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Logo_Nuevo_UCSH.jpg/480px-Logo_Nuevo_UCSH.jpg' 
+    },
+    { 
+      name: 'Universidad Santo Tomás', 
+      location: 'Santiago', 
+      website: 'https://www.santotomas.cl/', 
+      logo: 'https://www.ust.cl/web/wp-content/uploads/sites/6/2019/08/logo-ust.svg' 
+  },
+    { 
+        name: 'Universidad Bernardo O\'Higgins', 
+        location: 'Santiago', 
+        website: 'https://www.ubo.cl/', 
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/4/46/1_logo_ubo.png' 
+    }
+];
+
 
   return (
     <div className="bg-gray-50 min-h-screen py-12">

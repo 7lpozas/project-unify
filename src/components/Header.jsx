@@ -11,6 +11,7 @@ function Header() {
         <div className="hidden md:flex space-x-6 items-center">
           <Link to="/" className="nav-link">Inicio</Link>
           <Link to="/sobre-unify" className="nav-link">Sobre Unify</Link>
+          <Link to="/calculator" className="nav-link">Calculadora</Link>
           <Link to="/universidades" className="nav-link">Universidades</Link>
           <Link to="/iniciar-sesion" className="btn bg-green-800 text-white hover:bg-green-700 flex items-center">
             <span>Acceso</span>

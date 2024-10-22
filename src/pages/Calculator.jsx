@@ -11,15 +11,15 @@ function Calculator() {
     ciencias: ''
   });
   const [errors, setErrors] = useState({});
-
   const [programs, setPrograms] = useState([]);
   const [universidades, setUniversidades] = useState([]);
   const [carreras, setCarreras] = useState([]);
   const [filteredPrograms, setFilteredPrograms] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
+  const [selectedCarrera, setSelectedCarrera] = useState('');
+  const [selectedUniversidad, setSelectedUniversidad] = useState('');
 
   useEffect(() => {
-    // Llamadas a los endpoints para obtener toda la información
     const fetchInformation = async () => {
       try {
         const [universidadesResponse, carrerasResponse, informationsResponse] = await Promise.all([
@@ -56,8 +56,7 @@ function Calculator() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const numValue = parseInt(value, 10);
-    
-    // Solo validar si el campo no está vacío
+
     if (value !== '' && (numValue < 100 || numValue > 1000)) {
       setErrors(prevErrors => ({
         ...prevErrors,
@@ -69,54 +68,42 @@ function Calculator() {
         [name]: ''
       }));
     }
-  
+
     setScores(prevScores => ({
       ...prevScores,
       [name]: value
     }));
   };
-  
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     const hasErrors = Object.values(errors).some(error => error !== '');
     if (hasErrors) {
       alert('Por favor, corrige los errores antes de continuar.');
       return;
     }
-  
-    const filtered = programs.map(pr => {
-      // Si historia y ciencias tienen ponderación distinta de 0, tomar el mejor puntaje
-      let mejorHistoriaCiencias = 0;
-  
-      if (pr.ponderacionHistoria > 0 && pr.ponderacionCiencias > 0) {
-        mejorHistoriaCiencias = Math.max(scores.historia || 0, scores.ciencias || 0);
-      } else if (pr.ponderacionHistoria > 0) {
-        mejorHistoriaCiencias = scores.historia || 0;
-      } else if (pr.ponderacionCiencias > 0) {
-        mejorHistoriaCiencias = scores.ciencias || 0;
-      }
-  
+
+    const filtered = programs.filter(pr => {
+      const cienciasHistoriaPonderacion = Math.max(
+        scores.ciencias * pr.ponderacionCiencias || 0,
+        scores.historia * pr.ponderacionHistoria || 0
+      );
+
       const ponderacionUsuario =
         ((scores.matematicas1 * pr.ponderacionM1) +
         (scores.lectura * pr.ponderacionLeguaje) +
         (scores.ranking * pr.ponderacionRanking) +
         (scores.nem * pr.ponderacionNem) +
         (scores.matematicas2 * pr.ponderacionM2) +
-        (mejorHistoriaCiencias * Math.max(pr.ponderacionHistoria, pr.ponderacionCiencias))) / 100;
-  
-      return {
-        ...pr,
-        ponderacionUsuario: ponderacionUsuario, // Guardamos el resultado del cálculo
-        pasaCorte: ponderacionUsuario >= pr.puntajeCorte // Filtramos si pasa el corte
-      };
-    }).filter(pr => pr.pasaCorte);
-  
-    setFilteredPrograms(filtered); // Guarda los resultados filtrados
+        cienciasHistoriaPonderacion) / 100;
+
+      return ponderacionUsuario >= pr.puntajeCorte;
+    });
+
+    setFilteredPrograms(filtered);
   };
-  
+
   const handleSort = () => {
     const sortedPrograms = [...filteredPrograms].sort((a, b) => {
       return sortOrder === 'asc'
@@ -124,9 +111,22 @@ function Calculator() {
         : b.puntajeCorte - a.puntajeCorte;
     });
     setFilteredPrograms(sortedPrograms);
-    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc'); // Alterna entre ascendente y descendente
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
 
+  const handleFilter = () => {
+    let filtered = programs;
+
+    if (selectedCarrera) {
+      filtered = filtered.filter(pr => pr.idCarrera === parseInt(selectedCarrera));
+    }
+
+    if (selectedUniversidad) {
+      filtered = filtered.filter(pr => pr.idUniversidad === parseInt(selectedUniversidad));
+    }
+
+    setFilteredPrograms(filtered);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -137,50 +137,56 @@ function Calculator() {
         <div className="mb-8">
           <h3 className="text-xl font-semibold mb-4">Campos obligatorios</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Input fields */}
             <div>
+              <label className="block mb-2">Puntaje Matemáticas 1 (M1)</label>
               <input
                 type="number"
                 name="matematicas1"
                 value={scores.matematicas1}
                 onChange={handleInputChange}
-                placeholder="Puntaje Matemáticas 1 (M1)"
+                placeholder="Ingresa puntaje"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.matematicas1 && <p className="text-red-500">{errors.matematicas1}</p>}
             </div>
+
             <div>
+              <label className="block mb-2">Puntaje C. Lectora</label>
               <input
                 type="number"
                 name="lectura"
                 value={scores.lectura}
                 onChange={handleInputChange}
-                placeholder="Puntaje C. Lectora"
+                placeholder="Ingresa puntaje"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.lectura && <p className="text-red-500">{errors.lectura}</p>}
             </div>
+
             <div>
+              <label className="block mb-2">Puntaje Ranking</label>
               <input
                 type="number"
                 name="ranking"
                 value={scores.ranking}
                 onChange={handleInputChange}
-                placeholder="Puntaje Ranking"
+                placeholder="Ingresa puntaje"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.ranking && <p className="text-red-500">{errors.ranking}</p>}
             </div>
+
             <div>
+              <label className="block mb-2">Puntaje NEM</label>
               <input
                 type="number"
                 name="nem"
                 value={scores.nem}
                 onChange={handleInputChange}
-                placeholder="Puntaje NEM"
+                placeholder="Ingresa puntaje"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
@@ -192,36 +198,38 @@ function Calculator() {
         <div className="mb-8">
           <h3 className="text-xl font-semibold mb-4">Campos opcionales</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Optional input fields */}
             <div>
+              <label className="block mb-2">Puntaje Matemáticas 2 (M2)</label>
               <input
                 type="number"
                 name="matematicas2"
                 value={scores.matematicas2}
                 onChange={handleInputChange}
-                placeholder="Puntaje Matemáticas 2 (M2)"
+                placeholder="Ingresa puntaje"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.matematicas2 && <p className="text-red-500">{errors.matematicas2}</p>}
             </div>
             <div>
+              <label className="block mb-2">Puntaje Historia</label>
               <input
                 type="number"
                 name="historia"
                 value={scores.historia}
                 onChange={handleInputChange}
-                placeholder="Puntaje Historia"
+                placeholder="Ingresa puntaje"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.historia && <p className="text-red-500">{errors.historia}</p>}
             </div>
             <div>
+              <label className="block mb-2">Puntaje Ciencias</label>
               <input
                 type="number"
                 name="ciencias"
                 value={scores.ciencias}
                 onChange={handleInputChange}
-                placeholder="Puntaje Ciencias"
+                placeholder="Ingresa puntaje"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.ciencias && <p className="text-red-500">{errors.ciencias}</p>}
@@ -229,21 +237,55 @@ function Calculator() {
           </div>
         </div>
 
-        <button type="submit" className="w-full btn btn-primary">Calcular</button>
-      </form>
+        <button type="submit" className="w-full btn btn-primary mb-4">Calcular</button>
 
-      <div className="mt-12">
-        <button onClick={handleSort} className="btn btn-secondary mb-4">
-          Ordenar por puntaje de corte ({sortOrder === 'asc' ? 'Ascendente' : 'Descendente'})
-        </button>
+        {/* Filtro por universidad y carrera */}
+        <div className="flex mb-4">
+          <select
+            value={selectedCarrera}
+            onChange={(e) => setSelectedCarrera(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md mr-4"
+          >
+            <option value="">Todas las carreras</option>
+            {carreras.map(carrera => (
+              <option key={carrera.idCarrera} value={carrera.idCarrera}>
+                {carrera.nombre}
+              </option>
+            ))}
+          </select>
 
+          <select
+            value={selectedUniversidad}
+            onChange={(e) => setSelectedUniversidad(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          >
+            <option value="">Todas las universidades</option>
+            {universidades.map(universidad => (
+              <option key={universidad.idUniversidad} value={universidad.idUniversidad}>
+                {universidad.nombre}
+              </option>
+            ))}
+          </select>
+
+          <button
+            type="button"
+            onClick={handleFilter}
+            className="ml-4 btn btn-secondary"
+          >
+            Filtrar
+          </button>
+        </div>
+
+        {/* Tabla de resultados */}
         <div className="overflow-x-auto">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-4 py-2 text-left">Carrera</th>
                 <th className="px-4 py-2 text-left">Universidad</th>
-                <th className="px-4 py-2 text-left">Puntaje corte</th>
+                <th className="px-4 py-2 text-left cursor-pointer" onClick={handleSort}>
+                  Puntaje corte {sortOrder === 'asc' ? '▲' : '▼'}
+                </th>
                 <th className="px-4 py-2 text-left">Puntaje ponderado</th>
               </tr>
             </thead>
@@ -255,13 +297,17 @@ function Calculator() {
                     <td className="px-4 py-2">{getNombreUniversidad(pr.idUniversidad)}</td>
                     <td className="px-4 py-2">{pr.puntajeCorte}</td>
                     <td className="px-4 py-2">
-                      {((scores.matematicas1 * pr.ponderacionM1) +
-                      (scores.lectura * pr.ponderacionLeguaje) +
-                      (scores.ranking * pr.ponderacionRanking) +
-                      (scores.nem * pr.ponderacionNem) +
-                      (scores.matematicas2 * pr.ponderacionM2) +
-                      (scores.historia * pr.ponderacionHistoria) +
-                      (scores.ciencias * pr.ponderacionCiencias)) / 100}
+                      {(
+                        ((scores.matematicas1 * pr.ponderacionM1) +
+                        (scores.lectura * pr.ponderacionLeguaje) +
+                        (scores.ranking * pr.ponderacionRanking) +
+                        (scores.nem * pr.ponderacionNem) +
+                        (scores.matematicas2 * pr.ponderacionM2) +
+                        Math.max(
+                          scores.ciencias * pr.ponderacionCiencias || 0,
+                          scores.historia * pr.ponderacionHistoria || 0
+                        )) / 100
+                      ).toFixed(2)}
                     </td>
                   </tr>
                 ))
@@ -273,7 +319,7 @@ function Calculator() {
             </tbody>
           </table>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

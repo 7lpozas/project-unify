@@ -35,6 +35,7 @@ function Calculator() {
         setUniversidades(universidadesData);
         setCarreras(carrerasData);
         setPrograms(informationsData);
+        setFilteredPrograms(informationsData); // Mostrar toda la lista inicialmente
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -75,35 +76,6 @@ function Calculator() {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const hasErrors = Object.values(errors).some(error => error !== '');
-    if (hasErrors) {
-      alert('Por favor, corrige los errores antes de continuar.');
-      return;
-    }
-
-    const filtered = programs.filter(pr => {
-      const cienciasHistoriaPonderacion = Math.max(
-        scores.ciencias * pr.ponderacionCiencias || 0,
-        scores.historia * pr.ponderacionHistoria || 0
-      );
-
-      const ponderacionUsuario =
-        ((scores.matematicas1 * pr.ponderacionM1) +
-        (scores.lectura * pr.ponderacionLeguaje) +
-        (scores.ranking * pr.ponderacionRanking) +
-        (scores.nem * pr.ponderacionNem) +
-        (scores.matematicas2 * pr.ponderacionM2) +
-        cienciasHistoriaPonderacion) / 100;
-
-      return ponderacionUsuario >= pr.puntajeCorte;
-    });
-
-    setFilteredPrograms(filtered);
-  };
-
   const handleSort = () => {
     const sortedPrograms = [...filteredPrograms].sort((a, b) => {
       return sortOrder === 'asc'
@@ -141,7 +113,7 @@ function Calculator() {
       <h2 className="text-3xl font-bold mb-6 text-center">Encuentra las universidades que mejor se adaptan a ti</h2>
       <p className="text-lg text-gray-600 mb-8 text-center">Ingresa tus puntajes PAES y te ayudaremos a encontrar las mejores opciones para tu futuro académico.</p>
       
-      <form onSubmit={handleSubmit} className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6">
+      <form className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6">
         <div className="mb-8">
           <h3 className="text-xl font-semibold mb-4">Campos obligatorios</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -245,8 +217,6 @@ function Calculator() {
           </div>
         </div>
 
-        <button type="submit" className="w-full btn btn-primary mb-4">Calcular</button>
-
         {/* Filtro por universidad y carrera */}
         <div className="flex mb-4">
           <select
@@ -301,16 +271,17 @@ function Calculator() {
             <tbody>
               {filteredPrograms.length > 0 ? (
                 filteredPrograms.map((pr) => {
+                  const cienciasHistoriaPonderacion = Math.max(
+                    scores.ciencias * pr.ponderacionCiencias || 0,
+                    scores.historia * pr.ponderacionHistoria || 0
+                  );
                   const ponderacionUsuario = (
                     ((scores.matematicas1 * pr.ponderacionM1) +
                     (scores.lectura * pr.ponderacionLeguaje) +
                     (scores.ranking * pr.ponderacionRanking) +
                     (scores.nem * pr.ponderacionNem) +
                     (scores.matematicas2 * pr.ponderacionM2) +
-                    Math.max(
-                      scores.ciencias * pr.ponderacionCiencias || 0,
-                      scores.historia * pr.ponderacionHistoria || 0
-                    )) / 100
+                    cienciasHistoriaPonderacion) / 100
                   ).toFixed(2);
 
                   const { difference, color } = calculateDifference(ponderacionUsuario, pr.puntajeCorte);
@@ -320,14 +291,18 @@ function Calculator() {
                       <td className="px-4 py-2">{getNombreCarrera(pr.idCarrera)}</td>
                       <td className="px-4 py-2">{getNombreUniversidad(pr.idUniversidad)}</td>
                       <td className="px-4 py-2">{pr.puntajeCorte}</td>
-                      <td className="px-4 py-2">{ponderacionUsuario}</td>
-                      <td className={`px-4 py-2 ${color}`}>{difference.toFixed(2)}</td>
+                      <td className="px-4 py-2">
+                        {scores.matematicas1 && scores.lectura && scores.ranking && scores.nem ? ponderacionUsuario : 'N/A'}
+                      </td>
+                      <td className={`px-4 py-2 ${color}`}>
+                        {scores.matematicas1 && scores.lectura && scores.ranking && scores.nem ? difference.toFixed(2) : 'N/A'}
+                      </td>
                     </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td colSpan="5" className="text-center px-4 py-2">No hay resultados que superen el puntaje de corte</td>
+                  <td colSpan="5" className="text-center px-4 py-2">No hay resultados disponibles</td>
                 </tr>
               )}
             </tbody>

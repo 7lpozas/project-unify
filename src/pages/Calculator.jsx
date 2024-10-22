@@ -126,6 +126,8 @@ function Calculator() {
                 onChange={handleInputChange}
                 placeholder="Ingresa puntaje"
                 required
+                min="100"
+                max="1000"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.matematicas1 && <p className="text-red-500">{errors.matematicas1}</p>}
@@ -140,6 +142,8 @@ function Calculator() {
                 onChange={handleInputChange}
                 placeholder="Ingresa puntaje"
                 required
+                min="100"
+                max="1000"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.lectura && <p className="text-red-500">{errors.lectura}</p>}
@@ -154,6 +158,8 @@ function Calculator() {
                 onChange={handleInputChange}
                 placeholder="Ingresa puntaje"
                 required
+                min="100"
+                max="1000"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.ranking && <p className="text-red-500">{errors.ranking}</p>}
@@ -168,6 +174,8 @@ function Calculator() {
                 onChange={handleInputChange}
                 placeholder="Ingresa puntaje"
                 required
+                min="100"
+                max="1000"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.nem && <p className="text-red-500">{errors.nem}</p>}
@@ -186,6 +194,8 @@ function Calculator() {
                 value={scores.matematicas2}
                 onChange={handleInputChange}
                 placeholder="Ingresa puntaje"
+                min="100"
+                max="1000"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.matematicas2 && <p className="text-red-500">{errors.matematicas2}</p>}
@@ -198,6 +208,8 @@ function Calculator() {
                 value={scores.historia}
                 onChange={handleInputChange}
                 placeholder="Ingresa puntaje"
+                min="100"
+                max="1000"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.historia && <p className="text-red-500">{errors.historia}</p>}
@@ -210,6 +222,8 @@ function Calculator() {
                 value={scores.ciencias}
                 onChange={handleInputChange}
                 placeholder="Ingresa puntaje"
+                min="100"
+                max="1000"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.ciencias && <p className="text-red-500">{errors.ciencias}</p>}
@@ -286,16 +300,19 @@ function Calculator() {
 
                   const { difference, color } = calculateDifference(ponderacionUsuario, pr.puntajeCorte);
 
+                  const showPonderacion = scores.matematicas1 && scores.lectura && scores.ranking && scores.nem;
+                  const displayDifference = showPonderacion ? difference.toFixed(2) : '--';
+                  const displayPonderacion = showPonderacion ? ponderacionUsuario : '--';
+                  const differenceColor = showPonderacion ? color : 'text-black'; // Set to black if no scores are entered
+
                   return (
                     <tr key={`${pr.idCarrera}-${pr.idUniversidad}`}>
                       <td className="px-4 py-2">{getNombreCarrera(pr.idCarrera)}</td>
                       <td className="px-4 py-2">{getNombreUniversidad(pr.idUniversidad)}</td>
                       <td className="px-4 py-2">{pr.puntajeCorte}</td>
-                      <td className="px-4 py-2">
-                        {scores.matematicas1 && scores.lectura && scores.ranking && scores.nem ? ponderacionUsuario : 'N/A'}
-                      </td>
-                      <td className={`px-4 py-2 ${color}`}>
-                        {scores.matematicas1 && scores.lectura && scores.ranking && scores.nem ? difference.toFixed(2) : 'N/A'}
+                      <td className="px-4 py-2">{displayPonderacion}</td>
+                      <td className={`px-4 py-2 ${differenceColor}`}>
+                        {displayDifference}
                       </td>
                     </tr>
                   );

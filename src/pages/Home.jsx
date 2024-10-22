@@ -20,22 +20,22 @@ function Home() {
           </div>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 gap-8 mb-16">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-2">Calculadora PAES</h3>
             <p className="text-gray-600 mb-4">Ingresa tus puntajes y descubre tus opciones universitarias.</p>
             <Link to="/calculator" className="text-primary font-semibold hover:underline">Calcular ahora →</Link>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">Explorar Universidades</h3>
-            <p className="text-gray-600 mb-4">Conoce las mejores universidades de Chile y sus programas.</p>
-            <Link to="/universidades" className="text-primary font-semibold hover:underline">Ver universidades →</Link>
+            <h3 className="text-xl font-semibold mb-2">Acerca de Unify</h3>
+            <p className="text-gray-600 mb-4">Conoce tu nueva herramienta de postulación.</p>
+            <Link to="/sobre-unify" className="text-primary font-semibold hover:underline"> Saber más →</Link>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          {/* <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-xl font-semibold mb-2">Asesoría Personalizada</h3>
             <p className="text-gray-600 mb-4">Recibe orientación experta para tu elección universitaria.</p>
             <Link to="/contacto" className="text-primary font-semibold hover:underline">Contactar ahora →</Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

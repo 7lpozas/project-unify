@@ -12,7 +12,7 @@ function Header() {
           <Link to="/" className="nav-link">Inicio</Link>
           <Link to="/sobre-unify" className="nav-link">Sobre Unify</Link>
           <Link to="/calculator" className="nav-link">Calculadora</Link>
-          <Link to="/universidades" className="nav-link">Universidades</Link>
+          {/* <Link to="/universidades" className="nav-link">Universidades</Link> */}
           <Link to="/iniciar-sesion" className="btn bg-green-800 text-white hover:bg-green-700 flex items-center">
             <span>Acceso</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">

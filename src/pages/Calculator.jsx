@@ -128,12 +128,20 @@ function Calculator() {
     setFilteredPrograms(filtered);
   };
 
+  const calculateDifference = (ponderacionUsuario, puntajeCorte) => {
+    const difference = ponderacionUsuario - puntajeCorte;
+    return {
+      difference,
+      color: difference >= 0 ? 'text-green-500' : 'text-red-500',
+    };
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-3xl font-bold mb-6 text-center">Encuentra las universidades que mejor se adaptan a ti</h2>
       <p className="text-lg text-gray-600 mb-8 text-center">Ingresa tus puntajes PAES y te ayudaremos a encontrar las mejores opciones para tu futuro académico.</p>
       
-      <form onSubmit={handleSubmit} className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6">
+      <form onSubmit={handleSubmit} className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-6">
         <div className="mb-8">
           <h3 className="text-xl font-semibold mb-4">Campos obligatorios</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -287,33 +295,39 @@ function Calculator() {
                   Puntaje corte {sortOrder === 'asc' ? '▲' : '▼'}
                 </th>
                 <th className="px-4 py-2 text-left">Puntaje ponderado</th>
+                <th className="px-4 py-2 text-left">Diferencia</th>
               </tr>
             </thead>
             <tbody>
               {filteredPrograms.length > 0 ? (
-                filteredPrograms.map((pr) => (
-                  <tr key={`${pr.idCarrera}-${pr.idUniversidad}`}>
-                    <td className="px-4 py-2">{getNombreCarrera(pr.idCarrera)}</td>
-                    <td className="px-4 py-2">{getNombreUniversidad(pr.idUniversidad)}</td>
-                    <td className="px-4 py-2">{pr.puntajeCorte}</td>
-                    <td className="px-4 py-2">
-                      {(
-                        ((scores.matematicas1 * pr.ponderacionM1) +
-                        (scores.lectura * pr.ponderacionLeguaje) +
-                        (scores.ranking * pr.ponderacionRanking) +
-                        (scores.nem * pr.ponderacionNem) +
-                        (scores.matematicas2 * pr.ponderacionM2) +
-                        Math.max(
-                          scores.ciencias * pr.ponderacionCiencias || 0,
-                          scores.historia * pr.ponderacionHistoria || 0
-                        )) / 100
-                      ).toFixed(2)}
-                    </td>
-                  </tr>
-                ))
+                filteredPrograms.map((pr) => {
+                  const ponderacionUsuario = (
+                    ((scores.matematicas1 * pr.ponderacionM1) +
+                    (scores.lectura * pr.ponderacionLeguaje) +
+                    (scores.ranking * pr.ponderacionRanking) +
+                    (scores.nem * pr.ponderacionNem) +
+                    (scores.matematicas2 * pr.ponderacionM2) +
+                    Math.max(
+                      scores.ciencias * pr.ponderacionCiencias || 0,
+                      scores.historia * pr.ponderacionHistoria || 0
+                    )) / 100
+                  ).toFixed(2);
+
+                  const { difference, color } = calculateDifference(ponderacionUsuario, pr.puntajeCorte);
+
+                  return (
+                    <tr key={`${pr.idCarrera}-${pr.idUniversidad}`}>
+                      <td className="px-4 py-2">{getNombreCarrera(pr.idCarrera)}</td>
+                      <td className="px-4 py-2">{getNombreUniversidad(pr.idUniversidad)}</td>
+                      <td className="px-4 py-2">{pr.puntajeCorte}</td>
+                      <td className="px-4 py-2">{ponderacionUsuario}</td>
+                      <td className={`px-4 py-2 ${color}`}>{difference.toFixed(2)}</td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
-                  <td colSpan="4" className="text-center px-4 py-2">No hay resultados que superen el puntaje de corte</td>
+                  <td colSpan="5" className="text-center px-4 py-2">No hay resultados que superen el puntaje de corte</td>
                 </tr>
               )}
             </tbody>
